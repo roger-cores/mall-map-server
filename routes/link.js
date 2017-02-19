@@ -1,18 +1,24 @@
 var express = require('express');
 
 
-var classRouteFunction = function(ClassRecord, codes){
+var classRouteFunction = function(Link, ClassRecord, codes){
   var router = express.Router();
 
   //create
   //returns 201 or 500
+
+
   router.post('/', function(req, res, next){
-    ClassRecord.build(req.body)
+    req.body.source_label = req.body.sourceLabel.label;
+    req.body.destination_label = req.body.destinationLabel.label;
+    Link.build(req.body)
       .save()
-      .then(function(classRecord){
-        res.status(codes.CREATED).send(classRecord);
+      .then(function(link){
+        req.body.identifier = link.identifier;
+        res.status(codes.CREATED).send(req.body);
       })
       .catch(function(error){
+        console.log(error);
         res.status(codes.SERVER_ERROR).send({});
       });
   });
@@ -21,10 +27,10 @@ var classRouteFunction = function(ClassRecord, codes){
   //returns 201 or 500
   router.delete('/:id', function(req, res, next){
     console.log(req.params.id);
-    ClassRecord.findById(req.params.id)
-      .then(function(classRecord){
-        if(classRecord){
-          classRecord.destroy();
+    Link.findById(req.params.id)
+      .then(function(link){
+        if(link){
+          link.destroy();
           res.status(codes.CREATED).send({});
         }
         else res.status(codes.SERVER_ERROR).send({error: error});
@@ -38,27 +44,20 @@ var classRouteFunction = function(ClassRecord, codes){
   //list
   //returns 200 or 500
   router.get('/', function(req, res, next){
-    ClassRecord.findAll()
-      .then(function(classRecords){
-        res.status(codes.OK).send(classRecords);
-      })
-      .catch(function(error){
-        res.status(codes.SERVER_ERROR).send({});
-      });
-  });
-
-  //list by classType
-  //returns 200 or 500
-  router.get('/:classType', function(req, res, next){
-    ClassRecord.findAll({
-      where: {
-        classType: req.params.classType
-      }
+    Link.findAll({
+      include: [{
+        model: ClassRecord,
+        as: 'sourceLabel'
+      }, {
+        model: ClassRecord,
+        as: 'destinationLabel'
+      }]
     })
-      .then(function(classRecords){
-        res.status(codes.OK).send(classRecords);
+      .then(function(link){
+        res.status(codes.OK).send(link);
       })
       .catch(function(error){
+        console.log(error);
         res.status(codes.SERVER_ERROR).send({});
       });
   });

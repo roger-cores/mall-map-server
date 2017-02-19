@@ -31,6 +31,12 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, codes){
     var labels = new Array();
     var data = req.body.trainingSet;
     TrainingSet.findAll().then(function(trainingSets) {
+
+      if(trainingSets.length == 0) {
+        res.status(200).send([]);
+        return;
+      }
+
       for(var key in trainingSets){
         var trainingSet = trainingSets[key];
         var distance = Math.sqrt(Math.pow(data.beacon1 - trainingSet.beacon1, 2)
