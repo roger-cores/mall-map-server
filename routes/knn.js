@@ -4,6 +4,13 @@ var express = require('express');
 var knnRouteFunction = function(TrainingSet, ClassRecord, codes){
   var router = express.Router();
 
+
+  //delete all training data
+  router.delete('/delete', function(req, res, next){
+    TrainingSet.destroy({where: {}}).then(function () {});
+    res.status(codes.CREATED).send({});
+  });
+
   //post a training data
   //returns 201 or 500
   router.post('/train', function(req, res, next){
