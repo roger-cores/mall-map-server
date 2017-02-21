@@ -108,8 +108,14 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
 
 
   //delete all training data
-  router.delete('/delete', function(req, res, next){
+  router.delete('/', function(req, res, next){
     TrainingSet.destroy({where: {}}).then(function () {});
+    res.status(codes.CREATED).send({});
+  });
+
+  //delete all for classLabel
+  router.delete('/:classlabel', function(req, res, next){
+    TrainingSet.destroy({where: {classRecordLabel: req.params.classlabel}}).then(function () {});
     res.status(codes.CREATED).send({});
   });
 
