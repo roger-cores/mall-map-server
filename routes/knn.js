@@ -43,7 +43,8 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
         var distance = Math.sqrt(Math.pow(data.beacon1 - trainingSet.beacon1, 2)
                         + Math.pow(data.beacon2 - trainingSet.beacon2, 2)
                         + Math.pow(data.beacon3 - trainingSet.beacon3, 2)
-                        + Math.pow(data.beacon4 - trainingSet.beacon4, 2));
+                        + Math.pow(data.beacon4 - trainingSet.beacon4, 2)
+                        + Math.pow(data.beacon5 - trainingSet.beacon5, 2));
         trainingSet.distance = distance;
         trainingSet.dataValues.distance = distance;
         if(minDistances.length < k){

@@ -5,6 +5,7 @@ var trainingSet = function(trainingDatabase, Sequelize){
     beacon2: {type: Sequelize.INTEGER, allowNull: false, unique: 'uniqueBeaconSet'},
     beacon3: {type: Sequelize.INTEGER, allowNull: false, unique: 'uniqueBeaconSet'},
     beacon4: {type: Sequelize.INTEGER, allowNull: false, unique: 'uniqueBeaconSet'},
+    beacon5: {type: Sequelize.INTEGER, allowNull: false, unique: 'uniqueBeaconSet'},
     classRecordLabel: {type: Sequelize.STRING, allowNull: false, unique: 'uniqueBeaconSet'}
   });
 
