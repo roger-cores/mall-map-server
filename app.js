@@ -17,7 +17,7 @@ var utils = require('./utils.js');
 var inputProductData = require('./inputProductData');
 
 // var trainingDatabase = new Sequelize('postgres://postgres:root@localhost:5432/mallmap');
-var trainingDatabase = new Sequelize('postgres://eqmubddcjrbzce:7020c20337e134040da6293b05744bffb27bbd9114b36a90ba17d8739ced8ad8@ec2-54-225-230-243.compute-1.amazonaws.com:5432/d9h7gahqh50l9u');
+var trainingDatabase = new Sequelize('postgres://sldhyjnaqvotrg:3e7e827932185234d88a9675459495a8fd72497d1b9fc3f67f8f177585f4e4da@ec2-54-225-127-147.compute-1.amazonaws.com:5432/d55hnrdnrore27');
 var TrainingSet = models.TrainingSet(trainingDatabase, Sequelize);
 var ClassRecord = models.ClassRecord(trainingDatabase, Sequelize);
 var Beacon = models.Beacon(trainingDatabase, Sequelize);
