@@ -24,7 +24,7 @@ var Beacon = models.Beacon(trainingDatabase, Sequelize);
 var Link = models.Link(trainingDatabase, Sequelize);
 var Product = models.Product(trainingDatabase, Sequelize);
 
-//inputProductData(Product);
+inputProductData(Product);
 
 ClassRecord.hasMany(TrainingSet);
 TrainingSet.belongsTo(ClassRecord);
