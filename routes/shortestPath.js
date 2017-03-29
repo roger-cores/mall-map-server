@@ -20,6 +20,8 @@ var shortestPath = function(Link, ClassRecord, codes){
     res.status(codes.SERVER_ERROR).send({});
   }
 
+  //source = 614
+  //dest = 610
   router.get('/:source/to/:destination', function(req, res, next){
     var links, classes = new Array();
 
@@ -49,6 +51,7 @@ var shortestPath = function(Link, ClassRecord, codes){
             sendError(res);
           } else {
             for(var key in entities){
+              key = 0
               classes[entities[key].label] = entities[key];
               classes[entities[key].label].neighbours = {};
             }

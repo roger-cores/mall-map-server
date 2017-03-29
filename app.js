@@ -10,20 +10,23 @@ var classRoutes = require('./routes/class');
 var linkRoutes = require('./routes/link');
 var productRoutes = require('./routes/product');
 var shortestPathRoutes = require('./routes/shortestPath');
+var userRoutes = require('./routes/user');
 var codes = require('./codes.json');
 var Sequelize = require('sequelize');
 var models = require('./models');
 var utils = require('./utils.js');
 var inputProductData = require('./inputProductData');
 
-// var trainingDatabase = new Sequelize('postgres://postgres:root@localhost:5432/mallmap');
-var trainingDatabase = new Sequelize('postgres://sldhyjnaqvotrg:3e7e827932185234d88a9675459495a8fd72497d1b9fc3f67f8f177585f4e4da@ec2-54-225-127-147.compute-1.amazonaws.com:5432/d55hnrdnrore27');
+ var trainingDatabase = new Sequelize('postgres://postgres:root@localhost:5432/mallmap');
+//var trainingDatabase = new Sequelize('postgres://sldhyjnaqvotrg:3e7e827932185234d88a9675459495a8fd72497d1b9fc3f67f8f177585f4e4da@ec2-54-225-127-147.compute-1.amazonaws.com:5432/d55hnrdnrore27');
 var TrainingSet = models.TrainingSet(trainingDatabase, Sequelize);
 var ClassRecord = models.ClassRecord(trainingDatabase, Sequelize);
 var Beacon = models.Beacon(trainingDatabase, Sequelize);
 var Link = models.Link(trainingDatabase, Sequelize);
 var Product = models.Product(trainingDatabase, Sequelize);
 
+var User = models.User(trainingDatabase, Sequelize);
+User.sync();
 //inputProductData(Product);
 
 ClassRecord.hasMany(TrainingSet);
@@ -79,6 +82,7 @@ app.use('/class', classRoutes(ClassRecord, codes));
 app.use('/link', linkRoutes(Link, ClassRecord, codes));
 app.use('/route', shortestPathRoutes(Link, ClassRecord, codes));
 app.use('/product', productRoutes(Product, ClassRecord, codes));
+app.use('/login', userRoutes(User, codes));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
