@@ -25,7 +25,7 @@ var Beacon = models.Beacon(trainingDatabase, Sequelize);
 var Link = models.Link(trainingDatabase, Sequelize);
 var Product = models.Product(trainingDatabase, Sequelize);
 
-var User = models.User(trainingDatabase, Sequelize);
+var User = models.User(trainingDatabase, Sequelize); 
 User.sync();
 //inputProductData(Product);
 
