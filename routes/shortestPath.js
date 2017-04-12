@@ -51,7 +51,6 @@ var shortestPath = function(Link, ClassRecord, codes){
             sendError(res);
           } else {
             for(var key in entities){
-              key = 0
               classes[entities[key].label] = entities[key];
               classes[entities[key].label].neighbours = {};
             }
