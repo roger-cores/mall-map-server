@@ -15,7 +15,7 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
       trainingSet.classRecordLabel = classRecord.label;
       trainingSet.save()
         .then(function(trainingSet){
-          res.status(codes.CREATED).send({});
+          res.status(codes.CREATED).send({}); //send back data
         })
         .catch(function(error){
           console.log(error);
