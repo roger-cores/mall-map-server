@@ -40,4 +40,4 @@ $ npm start
 
 ## Schema
 
-![Schema](/schema.svg?raw=true "Schema")
+![Schema](/schema.jpg?raw=true "Schema")
