@@ -11,6 +11,7 @@ var linkRoutes = require('./routes/link');
 var productRoutes = require('./routes/product');
 var shortestPathRoutes = require('./routes/shortestPath');
 var userRoutes = require('./routes/user');
+var mapImageRoutes = require('./routes/mapImage');
 var codes = require('./codes.json');
 var Sequelize = require('sequelize');
 var models = require('./models');
@@ -27,6 +28,7 @@ var ClassRecord = models.ClassRecord(trainingDatabase, Sequelize);
 var Beacon = models.Beacon(trainingDatabase, Sequelize);
 var Link = models.Link(trainingDatabase, Sequelize);
 var Product = models.Product(trainingDatabase, Sequelize);
+var MapImage = models.MapImage(trainingDatabase, Sequelize);
 
 var User = models.User(trainingDatabase, Sequelize);
 User.sync();
@@ -62,8 +64,11 @@ Product.sync();
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
+// app.set('views', path.join(__dirname, 'views'));
+// app.set('view engine', 'hbs');
+
+app.use(express.static('public'));
+app.set('view engine', 'ejs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -85,6 +90,7 @@ app.use('/class', classRoutes(ClassRecord, codes));
 app.use('/link', linkRoutes(Link, ClassRecord, codes));
 app.use('/route', shortestPathRoutes(Link, ClassRecord, codes));
 app.use('/product', productRoutes(Product, ClassRecord, codes));
+app.use('/map_image', mapImageRoutes(MapImage, codes));
 app.use('/login', userRoutes(User, codes));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
