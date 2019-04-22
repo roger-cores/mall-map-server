@@ -8,13 +8,11 @@ Please visit [roger-cores/mall-map-client](https://www.github.com/roger-cores/ma
 ## How to run
 
  - Install the Postgres server and start it
- - Notedown the username, password and the port and edit them in app.js file
- - Run the following commands:
 ```sh
 $ git clone https://www.github.com/roger-cores/mall-map-server
 $ cd mall-map-server
 $ npm install
-$ npm start
+$ userid=[db_username] passwd=[db_password] dburi=[ip of db_server] dbport=[port of db] dbname=[name of db] npm start
 ```
 
 ## Dependencies
