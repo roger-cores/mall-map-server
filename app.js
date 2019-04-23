@@ -58,6 +58,7 @@ TrainingSet.sync();
 Beacon.sync();
 Link.sync();
 Product.sync();
+MapImage.sync();
 
 // inputLinkData(Link);
 
