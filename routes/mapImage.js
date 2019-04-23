@@ -12,6 +12,17 @@ var mapImageRouteFunction = function(MapImage, codes){
     await res.render('index');
   });
 
+  //get all
+  router get('/', async function(req, res){
+    MapImage.findAll()
+      .then(function(mapImages){
+        res.status(codes.OK).send(mapImages);
+      })
+      .catch(function(error){
+        res.status(codes.SERVER_ERROR).send({});
+      });
+  });
+
   router.post('/post', upload.single('image'), async function (req, res) {
     MapImage.build(req.body)
       .save()

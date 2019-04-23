@@ -86,7 +86,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 
-app.use('/beacon', beaconRoutes(Beacon, codes));
+app.use('/beacon', function(req,res,next) {
+  console.log('here');
+}, beaconRoutes(Beacon, codes));
 app.use('/knn', knnRoutes(TrainingSet, ClassRecord, Sequelize, codes));
 app.use('/class', classRoutes(ClassRecord, codes));
 app.use('/link', linkRoutes(Link, ClassRecord, codes));
