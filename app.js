@@ -22,13 +22,14 @@ var inputLinkData = require('./inputLinkData');
 
 
 var trainingDatabase = new Sequelize(`postgres://${process.env.userid?process.env.userid:'postgres'}:${process.env.passwd?process.env.passwd:'pass'}@${process.env.dburi?process.env.dburi:'localhost'}:${process.env.dbport?process.env.dbport:'5432'}/${process.env.dbname?process.env.dbname:'mallmap'}`);
+var mapsDatabase = new Sequelize(`postgres://${process.env.userid?process.env.userid:'postgres'}:${process.env.passwd?process.env.passwd:'pass'}@${process.env.dburi?process.env.dburi:'localhost'}:${process.env.dbport?process.env.dbport:'5432'}/${process.env.mapsdbname?process.env.mapsdbname:'maps'}`);
 // var trainingDatabase = new Sequelize('postgres://wjvzstiabdqjec:22970eb9b5a299456638ed9bf594458b809b71f7ed5a0656346be7acb7e31e4f@ec2-54-246-108-119.eu-west-1.compute.amazonaws.com:5432/df29fe95b26a5a');
 var TrainingSet = models.TrainingSet(trainingDatabase, Sequelize);
 var ClassRecord = models.ClassRecord(trainingDatabase, Sequelize);
 var Beacon = models.Beacon(trainingDatabase, Sequelize);
 var Link = models.Link(trainingDatabase, Sequelize);
 var Product = models.Product(trainingDatabase, Sequelize);
-var MapImage = models.MapImage(trainingDatabase, Sequelize);
+var MapImage = models.MapImage(mapsDatabase, Sequelize);
 
 var User = models.User(trainingDatabase, Sequelize);
 User.sync();
