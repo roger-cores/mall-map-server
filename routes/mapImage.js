@@ -30,7 +30,26 @@ var mapImageRouteFunction = function(MapImage, codes){
       });
   });
 
+  //delete mapImage
+  router.delete('/:label', function(req, res, next){
+    console.log(req.params.label);
+    MapImage.findById(req.params.label)
+      .then(function(mapImage){
+        if(mapImage){
+          classRecord.destroy();
+          res.status(codes.CREATED).send({});
+        }
+        else res.status(codes.SERVER_ERROR).send({error: error});
+      })
+      .catch(function(error){
+        console.log(error);
+        res.status(codes.SERVER_ERROR).send({error: error});
+      });
+  });
+
   return router;
 }
+
+
 
 module.exports = mapImageRouteFunction;
