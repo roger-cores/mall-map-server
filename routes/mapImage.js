@@ -13,7 +13,7 @@ var mapImageRouteFunction = function(MapImage, codes){
   });
 
   //get all
-  router get('/', async function(req, res){
+  router.get('/', async function(req, res){
     MapImage.findAll()
       .then(function(mapImages){
         res.status(codes.OK).send(mapImages);
@@ -45,10 +45,12 @@ var mapImageRouteFunction = function(MapImage, codes){
   //delete mapImage
   router.delete('/:label', function(req, res, next){
     console.log(req.params.label);
+    const imagePath = path.join(__dirname, `./../public/images/${req.params.label}`);
     MapImage.findById(req.params.label)
       .then(function(mapImage){
         if(mapImage){
-          classRecord.destroy();
+          mapImage.destroy();
+          fs.unlinkSync(imagePath);
           res.status(codes.CREATED).send({});
         }
         else res.status(codes.SERVER_ERROR).send({error: error});
