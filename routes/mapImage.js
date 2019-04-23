@@ -2,6 +2,7 @@ var express = require('express');
 var upload = require('./../uploadMiddleware');
 var resize = require('./../ImageResize');
 var path = require('path');
+var fs = require('fs');
 
 
 var mapImageRouteFunction = function(MapImage, codes){
@@ -45,6 +46,25 @@ var mapImageRouteFunction = function(MapImage, codes){
         console.log(error);
         res.status(codes.SERVER_ERROR).send({error: error});
       });
+  });
+
+  //get image
+  router.get('/:label', function(req, res, next){
+    const imagePath = path.join(__dirname, `./../public/images/${req.params.label}`);
+    fs.readFile(imagePath, function(err, contents) {
+      console.log(contents);
+      if(err || !contents) {
+        res.status(codes.SERVER_ERROR).send({error: err});
+        return;
+      }
+      var img = new Buffer(contents, 'base64');
+      res.writeHead(200, {
+       'Content-Type': 'image/png',
+       'Content-Length': img.length
+      });
+      res.end(img);
+    });
+
   });
 
   return router;
