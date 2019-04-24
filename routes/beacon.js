@@ -1,16 +1,15 @@
 var express = require('express');
 
-var beaconRouteFunction = function(Beacon, codes){
+var beaconRouteFunction = function(codes){
   var router = express.Router();
-
 
   //create or update
   //returns 201 or 500
   router.post('/', function(req, res, next){
-    Beacon.findById(req.body.name)
+    req.models.Beacon.findById(req.body.name)
       .then(function(beacon){
         if(!beacon){
-          Beacon.build(req.body)
+          req.models.Beacon.build(req.body)
             .save()
             .then(function(beacon){
               res.status(codes.CREATED).send(beacon);
@@ -40,7 +39,7 @@ var beaconRouteFunction = function(Beacon, codes){
   //get all beacons
   //returns 200 or 500
   router.get('/', function(req, res, next){
-    Beacon.findAll()
+    req.models.Beacon.findAll()
       .then(function(beacons){
         res.status(codes.OK).send(beacons);
       })
@@ -53,7 +52,7 @@ var beaconRouteFunction = function(Beacon, codes){
   //delete beacon by id(name)
   //returns 201 or 500
   router.delete('/:id', function(req, res, next){
-    Beacon.findById(req.params.id)
+    req.models.Beacon.findById(req.params.id)
       .then(function(beacon){
         if(beacon){
           beacon.destroy({force: true});

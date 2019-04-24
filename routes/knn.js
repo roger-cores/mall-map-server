@@ -1,17 +1,17 @@
 var express = require('express');
 
 
-var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
+var knnRouteFunction = function(Sequelize, codes){
   var router = express.Router();
 
 
   //post a training data
   //returns 201 or 500
   router.post('/train', function(req, res, next){
-    ClassRecord
+    req.models.ClassRecord
     .findOrCreate({where: {label: req.body.classRecord.label}, defaults: {x: req.body.classRecord.x, y: req.body.classRecord.y}})
     .spread(function(classRecord, created) {
-      var trainingSet = TrainingSet.build(req.body.trainingSet);
+      var trainingSet = req.models.TrainingSet.build(req.body.trainingSet);
       trainingSet.classRecordLabel = classRecord.label;
       trainingSet.save()
         .then(function(trainingSet){
@@ -31,7 +31,7 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
     var minDistances = new Array();
     var labels = new Array();
     var data = req.body.trainingSet;
-    TrainingSet.findAll().then(function(trainingSets) {
+    req.models.TrainingSet.findAll().then(function(trainingSets) {
 
       if(trainingSets.length == 0) {
         res.status(200).send([]);
@@ -84,7 +84,7 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
 
       console.log(labels);
 
-      ClassRecord.findById(majorityTrainingSet.classRecordLabel).then(function(classRecord) {
+      req.models.ClassRecord.findById(majorityTrainingSet.classRecordLabel).then(function(classRecord) {
         console.log(classRecord);
         res.status(codes.OK).send(classRecord);
       })
@@ -93,7 +93,7 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
 
 
   router.get('/count', function(req, res, next){
-    TrainingSet.findAll({
+    req.models.TrainingSet.findAll({
       attributes: ['classRecordLabel', [Sequelize.fn('COUNT', Sequelize.col('classRecordLabel')), 'class_count']],
       group: ['classRecordLabel']
     })
@@ -110,13 +110,13 @@ var knnRouteFunction = function(TrainingSet, ClassRecord, Sequelize, codes){
 
   //delete all training data
   router.delete('/', function(req, res, next){
-    TrainingSet.destroy({where: {}}).then(function () {});
+    req.models.TrainingSet.destroy({where: {}}).then(function () {});
     res.status(codes.CREATED).send({});
   });
 
   //delete all for classLabel
   router.delete('/:classlabel', function(req, res, next){
-    TrainingSet.destroy({where: {classRecordLabel: req.params.classlabel}}).then(function () {});
+    req.models.TrainingSet.destroy({where: {classRecordLabel: req.params.classlabel}}).then(function () {});
     res.status(codes.CREATED).send({});
   });
 

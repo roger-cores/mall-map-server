@@ -21,44 +21,44 @@ var inputLinkData = require('./inputLinkData');
 
 
 
-var trainingDatabase = new Sequelize(`postgres://${process.env.userid?process.env.userid:'postgres'}:${process.env.passwd?process.env.passwd:'pass'}@${process.env.dburi?process.env.dburi:'localhost'}:${process.env.dbport?process.env.dbport:'5432'}/${process.env.dbname?process.env.dbname:'mallmap'}`);
+// var trainingDatabase = new Sequelize(`postgres://${process.env.userid?process.env.userid:'postgres'}:${process.env.passwd?process.env.passwd:'pass'}@${process.env.dburi?process.env.dburi:'localhost'}:${process.env.dbport?process.env.dbport:'5432'}/${process.env.dbname?process.env.dbname:'mallmap'}`);
 var mapsDatabase = new Sequelize(`postgres://${process.env.userid?process.env.userid:'postgres'}:${process.env.passwd?process.env.passwd:'pass'}@${process.env.dburi?process.env.dburi:'localhost'}:${process.env.dbport?process.env.dbport:'5432'}/${process.env.mapsdbname?process.env.mapsdbname:'maps'}`);
 // var trainingDatabase = new Sequelize('postgres://wjvzstiabdqjec:22970eb9b5a299456638ed9bf594458b809b71f7ed5a0656346be7acb7e31e4f@ec2-54-246-108-119.eu-west-1.compute.amazonaws.com:5432/df29fe95b26a5a');
-var TrainingSet = models.TrainingSet(trainingDatabase, Sequelize);
-var ClassRecord = models.ClassRecord(trainingDatabase, Sequelize);
-var Beacon = models.Beacon(trainingDatabase, Sequelize);
-var Link = models.Link(trainingDatabase, Sequelize);
-var Product = models.Product(trainingDatabase, Sequelize);
+// var TrainingSet = models.TrainingSet(trainingDatabase, Sequelize);
+// var ClassRecord = models.ClassRecord(trainingDatabase, Sequelize);
+// var Beacon = models.Beacon(trainingDatabase, Sequelize);
+// var Link = models.Link(trainingDatabase, Sequelize);
+// var Product = models.Product(trainingDatabase, Sequelize);
 var MapImage = models.MapImage(mapsDatabase, Sequelize);
 
-var User = models.User(trainingDatabase, Sequelize);
-User.sync();
+// var User = models.User(trainingDatabase, Sequelize);
+// User.sync();
 // inputProductData(Product);
 
-ClassRecord.hasMany(TrainingSet);
-TrainingSet.belongsTo(ClassRecord);
+// ClassRecord.hasMany(TrainingSet);
+// TrainingSet.belongsTo(ClassRecord);
+//
+// Link.belongsTo(ClassRecord, {
+//   as: 'sourceLabel',
+//   foreignKey: 'source_label'
+// });
+//
+// Link.belongsTo(ClassRecord, {
+//   as: 'destinationLabel',
+//   foreignKey: 'destination_label'
+// });
+//
+// Product.belongsTo(ClassRecord, {
+//   as: 'classLabel',
+//   foreignKey: 'class_label'
+// });
 
-Link.belongsTo(ClassRecord, {
-  as: 'sourceLabel',
-  foreignKey: 'source_label'
-});
 
-Link.belongsTo(ClassRecord, {
-  as: 'destinationLabel',
-  foreignKey: 'destination_label'
-});
-
-Product.belongsTo(ClassRecord, {
-  as: 'classLabel',
-  foreignKey: 'class_label'
-});
-
-
-ClassRecord.sync();
-TrainingSet.sync();
-Beacon.sync();
-Link.sync();
-Product.sync();
+// ClassRecord.sync();
+// TrainingSet.sync();
+// Beacon.sync();
+// Link.sync();
+// Product.sync();
 MapImage.sync();
 
 // inputLinkData(Link);
@@ -80,15 +80,49 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+function modelsForDb(floor) {
+  var db = new Sequelize(`postgres://postgres:pass@localhost:5432/${floor}`);
+  entities = {}
+  entities.TrainingSet = models.TrainingSet(db, Sequelize);
+  entities.ClassRecord = models.ClassRecord(db, Sequelize);
+  entities.Beacon = models.Beacon(db, Sequelize);
+  entities.Link = models.Link(db, Sequelize);
 
-app.use('/beacon', beaconRoutes(Beacon, codes));
-app.use('/knn', knnRoutes(TrainingSet, ClassRecord, Sequelize, codes));
-app.use('/class', classRoutes(ClassRecord, codes));
-app.use('/link', linkRoutes(Link, ClassRecord, codes));
-app.use('/route', shortestPathRoutes(Link, ClassRecord, codes));
-app.use('/product', productRoutes(Product, ClassRecord, codes));
+
+  entities.ClassRecord.hasMany(TrainingSet);
+  entities.TrainingSet.belongsTo(ClassRecord);
+
+  entities.Link.belongsTo(ClassRecord, {
+    as: 'sourceLabel',
+    foreignKey: 'source_label'
+  });
+
+  entities.Link.belongsTo(ClassRecord, {
+    as: 'destinationLabel',
+    foreignKey: 'destination_label'
+  });
+
+  entities.ClassRecord.sync();
+  entities.TrainingSet.sync();
+  entities.Beacon.sync();
+  entities.Link.sync();
+
+  return entities;
+}
+
+var setUpDbMiddleware = function(req, res, next){
+  req.models = modelsForDb(req.params.label);
+  next();
+}
+
+app.use('/floor/:label/beacon', setUpDbMiddleware, beaconRoutes(codes));
+app.use('/floor/:label/knn', setUpDbMiddleware, knnRoutes(Sequelize, codes));
+app.use('/floor/:label/class', setUpDbMiddleware, classRoutes(codes));
+app.use('/floor/:label/link', setUpDbMiddleware, linkRoutes(codes));
+app.use('/floor/:label/route', setUpDbMiddleware, shortestPathRoutes(codes));
+// app.use('/product', setUpDbMiddleware, productRoutes(Product, ClassRecord, codes));
 app.use('/map_image', mapImageRoutes(MapImage, codes));
-app.use('/login', userRoutes(User, codes));
+// app.use('/login', userRoutes(User, codes));
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
